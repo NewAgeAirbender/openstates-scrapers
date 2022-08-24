@@ -46,6 +46,8 @@ class PuertoRico(State):
     def get_session_list(self):
         from utils import url_xpath
 
+        print("hi")
+
         # this URL should work even for future sessions
         return url_xpath(
             "https://sutra.oslpr.org/osl/esutra/",
