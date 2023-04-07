@@ -49,7 +49,7 @@ class BillDetailPage(HtmlPage):
         page = self.root
 
         abstract = page.xpath('//*[@id="content"]/div[1]/text()')[0].strip()
-        b.add_abstract(abstract, note="Summary")
+        b.add_abstract(abstract, note="summary")
 
         versions = page.xpath('//*[@id="versions"]/table/tbody/tr')
         for version in versions:
