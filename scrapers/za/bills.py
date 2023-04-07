@@ -31,14 +31,17 @@ def get_page_source(session, source_num, link):
 
 
 class BillDetailPage(HtmlPage):
+    input_type = Bill
+    example_input = Bill(
+        "B7",
+        "2023",
+        "[title]",
+        chamber="lower",
+        classification="bill",
+    )
     example_source = "https://www.parliament.gov.za/bill/2308132"
 
     def get_source_from_input(self):
-        # site = requests.get('https://www.parliament.gov.za')
-        # headers = {"Cookie": site.cookies,
-        #            "User-Agent": 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.0.0 Safari/537.36',
-        #            "Host": "parliament.gov.za",
-        #            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7"}
         return URL(self.input.sources[0]["url"], verify=False, timeout=30)
 
     def process_page(self):
@@ -72,14 +75,19 @@ class BillList(JsonPage):
             title = bill["name"]
             bill_id = bill["bill_no_number"]
             session = bill["bill_no_year"]
-            # date = bill["introduced_date"]
             link_num = bill["id"]
-            chamber = "lower" if bill["bill_status"][1] == "A" else "upper"
 
-            b = Bill(bill_id, session, title, chamber=chamber, classification="bill")
+            b = Bill(
+                bill_id,
+                session,
+                title,
+                chamber="lower" if bill["bill_status"][1] == "A" else "upper",
+                classification="bill",
+            )
             link = f"https://www.parliament.gov.za/bill/{link_num}"
             b.add_source(link)
-            yield BillDetailPage(b)
+            # yield BillDetailPage(b)
+            yield b
 
 
 class Assembly(BillList):
