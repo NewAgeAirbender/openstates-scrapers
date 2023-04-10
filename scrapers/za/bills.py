@@ -1,10 +1,20 @@
 import logging
 import json
+import attr
 import requests
 from openstates.scrape import Bill, Scraper
 from spatula import JsonPage, HtmlPage, URL
 
 chamber_map = {"National Council of Provinces": "upper", "National Assembly": "lower"}
+
+
+@attr.s(auto_attribs=True)
+class PartialBill:
+    bill_id: str
+    session: str
+    title: str
+    chamber: str
+    classification: str
 
 
 def graphql_query(data, link):
@@ -86,8 +96,7 @@ class BillList(JsonPage):
             )
             link = f"https://www.parliament.gov.za/bill/{link_num}"
             b.add_source(link)
-            # yield BillDetailPage(b)
-            yield b
+            yield BillDetailPage(b)
 
 
 class Assembly(BillList):
