@@ -127,5 +127,5 @@ class ZABillScraper(Scraper):
 
         # spatula's logging is better than scrapelib's
         logging.getLogger("scrapelib").setLevel(logging.WARNING)
-        bill_list = Assembly({"session": session})
+        bill_list = Assembly()
         yield from bill_list.do_scrape()
