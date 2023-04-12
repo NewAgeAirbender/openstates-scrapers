@@ -1,20 +1,10 @@
 import logging
 import json
-import attr
 import requests
 from openstates.scrape import Bill, Scraper
 from spatula import JsonPage, HtmlPage, URL
 
 chamber_map = {"National Council of Provinces": "upper", "National Assembly": "lower"}
-
-
-@attr.s(auto_attribs=True)
-class PartialBill:
-    bill_id: str
-    session: str
-    title: str
-    chamber: str
-    classification: str
 
 
 def graphql_query(data, link):
@@ -58,7 +48,11 @@ class BillDetailPage(HtmlPage):
         b = self.input
         page = self.root
 
-        abstract = page.xpath('//*[@id="content"]/div[1]/text()')[0].strip()
+        abstract = (
+            page.xpath('//*[@id="content"]/div[1]/text()')[0]
+            .replace("\r\n", "")
+            .strip()
+        )
         b.add_abstract(abstract, note="summary")
 
         versions = page.xpath('//*[@id="versions"]/table/tbody/tr')
@@ -94,9 +88,11 @@ class BillList(JsonPage):
                 chamber="lower" if bill["bill_status"][1] == "A" else "upper",
                 classification="bill",
             )
+            print(b.__dict__)
+            yield b
             link = f"https://www.parliament.gov.za/bill/{link_num}"
-            b.add_source(link)
-            yield BillDetailPage(b)
+            b.add_source(link, note="homepage")
+            # yield BillDetailPage(b)
 
 
 class Assembly(BillList):
@@ -118,7 +114,7 @@ class Passed(BillList):
 
 
 class ZABillScraper(Scraper):
-    def scrape(self, session="2023"):
+    def scrape(self):
         self.raise_errors = False
         self.retry_attempts = 1
         self.retry_wait_seconds = 3
