@@ -23,7 +23,7 @@ def graphql_query(data, link):
 def get_page_source(session, source_num, link):
     return graphql_query(
         {
-            "query": '{"keyword":null,"committee":null,"year":"' + session + '"}',
+            "query": f'{"keyword":null,"committee":null,"year":{session}"}',
             "bill_status": source_num,
         },
         link,
