@@ -23,7 +23,7 @@ def graphql_query(data, link):
 def get_page_source(session, source_num, link):
     return graphql_query(
         {
-            "query": f'{"keyword":null,"committee":null,"year":{session}"}',
+            "query": '{"keyword":null,"committee":null,"year":"' + session + '"}',
             "bill_status": source_num,
         },
         link,
@@ -69,7 +69,7 @@ class BillDetailPage(HtmlPage):
             entity_type="person",
             primary=True,
         )
-        yield b
+        return b
 
 
 class BillList(JsonListPage):
@@ -89,7 +89,7 @@ class BillList(JsonListPage):
             )
             link = f"https://www.parliament.gov.za/bill/{link_num}"
             b.add_source(link, note="homepage")
-            return BillDetailPage(b)
+            yield BillDetailPage(b)
 
 
 class Assembly(BillList):
