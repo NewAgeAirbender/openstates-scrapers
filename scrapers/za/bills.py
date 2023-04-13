@@ -2,7 +2,7 @@ import logging
 import json
 import requests
 from openstates.scrape import Bill, Scraper
-from spatula import JsonPage, HtmlPage, URL
+from spatula import JsonListPage, HtmlPage, URL
 
 chamber_map = {"National Council of Provinces": "upper", "National Assembly": "lower"}
 
@@ -72,10 +72,9 @@ class BillDetailPage(HtmlPage):
         yield b
 
 
-class BillList(JsonPage):
-    def process_page(self):
-        data = self.response.json().get("bills")
-        for bill in data:
+class BillList(JsonListPage):
+    def process_item(self, item):
+        for bill in self.data["bills"]:
             title = bill["name"]
             bill_id = bill["bill_no_number"]
             session = bill["bill_no_year"]
@@ -88,11 +87,9 @@ class BillList(JsonPage):
                 chamber="lower" if bill["bill_status"][1] == "A" else "upper",
                 classification="bill",
             )
-            print(b.__dict__)
-            yield b
             link = f"https://www.parliament.gov.za/bill/{link_num}"
             b.add_source(link, note="homepage")
-            # yield BillDetailPage(b)
+            return BillDetailPage(b)
 
 
 class Assembly(BillList):
