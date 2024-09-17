@@ -97,9 +97,8 @@ SPONSOR_REFINE_PATTERN = re.compile(
 SPONSOR_TYPE_REFINEMENTS = {
     "Chief Co-Sponsor": "cosponsor",
     "as Chief Co-Sponsor": "cosponsor",
-    "Alternate Chief Co-Sponsor Removed": "cosponsor",
-    "Alternate Chief Co-Sponsor": "primary",
-    "as Alternate Chief Co-Sponsor": "primary",
+    "Alternate Chief Co-Sponsor": "cosponsor",
+    "as Alternate Chief Co-Sponsor": "cosponsor",
     "as Co-Sponsor": "cosponsor",
     "Alternate Co-Sponsor": "cosponsor",
     "as Alternate Co-Sponsor": "cosponsor",
